@@ -22,12 +22,14 @@ This repository contains our reproduction of the MaskFeat self-supervised learni
 
 ## 📊 Results Summary
 
-| Dataset | Classes | Batch Size | Warmup | Top-1 Acc | Top-5 Acc | Training Time |
-|---------|---------|------------|--------|-----------|-----------|---------------|
-| ImageNet-100 | 100 | 32 | 20 epochs | **89.42%** | **98.20%** | 14.7h |
-| ImageNet-1K | 1000 | 128 | 20 epochs | **79.08%** | **94.51%** | 36h |
-| ImageNet-1K | 1000 | 512 | 5 epochs | **79.65%** | - | 20h |
-| **Paper (original)** | 1000 | 2048 | 5 epochs | **84.0%** | - | - |
+| Model | Dataset | Classes | Batch Size | Warmup | Top-1 Acc | Top-5 Acc | Training Time |
+|---------|---------|---------|------------|--------|-----------|-----------|---------------|
+| ViT-B | ImageNet-100 | 100 | 32 | 20 epochs | **89.42%** | **98.20%** | 14.7h |
+| ViT-B | ImageNet-1K | 1000 | 128 | 20 epochs | **79.08%** | **94.51%** | 36h |
+| ViT-B | ImageNet-1K | 1000 | 512 | 5 epochs | **79.65%** | - | 20h |
+| ViT-L | ImageNet-1K | 1000 | 192 | 5 epochs | **81.56%** | **96.0%** | 20h |
+| ViT-B | **Paper (original)** | 1000 | 2048 | 5 epochs | **84.0%** | - | 50h |
+| ViT-L | **Paper (original)** | 1000 | 1024 | 5 epochs | **85.7%** | - | - |
 
 **Gap Analysis**: Our 1-2% gap from paper is explained by hardware limitations (batch 512 vs paper's 2048).
 
@@ -70,24 +72,37 @@ We conducted two training runs with different configurations:
 
 ### Prerequisites
 
-- Python 3.9+
+- Python 3.8-3.11 (Version 3.12 has being tested, unable to run)
 - PyTorch 2.9+
-- CUDA 12.8+
+- CUDA 12.6+
 - 4× GPUs with 16-24GB VRAM (for batch 512 training)
 
 ### Installation
 
 ```bash
 # Clone this repository
-git clone https://github.com/YOUR_USERNAME/maskfeat-reproduction.git
+git clone --recursive https://github.com/Musicamatics/SlowFast.git 
 cd maskfeat-reproduction
+
+# Install pytorch suitable for your environment (here use cu128 as example)
+# If running on AMD GPU / CPU / MacOS, please find the link on https://pytorch.org/
+pip3 install torch==2.9.0 torchvision==0.24.0 --index-url https://download.pytorch.org/whl/cu128
+
+# Install updated pytorchvideo using github (as the pip version is too old for it to run)
+git clone https://github.com/facebookresearch/pytorchvideo
+cd pytorchvideo
+pip install -e .
+cd ..
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Setup detectron2 mock
+# Setup pythonpath for linux
 export PYTHONPATH=$(pwd)/detectron2_mock:$(pwd):$PYTHONPATH
-export PYTHONPATH=$(pwd)/mask
+export PYTHONPATH=$(pwd)/slowfast:$(pwd):$PYTHONPATH
+
+# Or use bat script for windows
+.\add_path_win.bat
 
 # Verify installation
 python -c "import detectron2; print('✅ detectron2 mock working!')"
@@ -96,10 +111,14 @@ python -c "import detectron2; print('✅ detectron2 mock working!')"
 ### Download Pre-trained Model
 
 ```bash
-# Download MaskFeat pre-trained ViT-B checkpoint
+# Make a directory for petrained models
 mkdir -p pretrained_models
-wget https://dl.fbaipublicfiles.com/maskfeat/pretrained_models/vit_b_maskfeat.pth \
+# download Vit-B model
+wget https://dl.fbaipublicfiles.com/pyslowfast/masked_models/in1k_VIT_B_MaskFeat_PT_epoch_01600.pyth \
      -O pretrained_models/vit_b_maskfeat.pth
+# download Vit-L model
+wget https://dl.fbaipublicfiles.com/pyslowfast/masked_models/in1k_VIT_L_MaskFeat_PT_epoch_01600.pyth \
+     -O pretrained_models/vit_l_maskfeat.pth
 ```
 
 ### Prepare ImageNet Dataset
@@ -232,14 +251,13 @@ data/imagenet-1k-converted/
 
 ## 🔬 Experimental Details
 
-### Model Architecture: Vision Transformer Base (ViT-B)
+### Model Architecture: Vision Transformer Base (ViT-B) and Vision Transformer Large (ViT-L)
 
-- **Parameters**: 85.9 million
+- **Parameters**: 85.9 million (ViT-B) and 307 million (ViT-L)
 - **Patch size**: 16×16
-- **Embedding dim**: 768
-- **Heads**: 12
-- **Layers**: 12 transformer blocks
-- **MLP ratio**: 4.0
+- **Embedding dim**: 768 (ViT-B) / 1024 (ViT-L)
+- **Heads**: 12 (ViT-B) / 16 (ViT-L)
+- **Layers**: 12 (ViT-B) / 24 (ViT-L) transformer blocks
 - **Pre-training**: MaskFeat with 1600 epochs on ImageNet-1K
 
 ### Training Configuration
