@@ -14,7 +14,7 @@ This repository contains our reproduction of the MaskFeat self-supervised learni
 
 - ✅ **ImageNet-100**: Achieved **89.42% top-1 accuracy** (98.20% top-5)
 - ✅ **ImageNet-1K**: Achieved **79.08% top-1 accuracy** with batch size 128
-- ✅ **ImageNet-1K**: Achieved **~79.65% top-1 accuracy** with batch size 512
+- ✅ **ImageNet-1K**: Achieved **79.65% top-1 accuracy** with batch size 512
 - ✅ **Paper's result**: 84.0% (our gap explained by smaller batch size: 512 vs 2048)
 - ✅ **Created `detectron2_mock`**: Workaround for Meta AI's unmaintained dependency
 
@@ -26,7 +26,7 @@ This repository contains our reproduction of the MaskFeat self-supervised learni
 |---------|---------|------------|--------|-----------|-----------|---------------|
 | ImageNet-100 | 100 | 32 | 20 epochs | **89.42%** | **98.20%** | 14.7h |
 | ImageNet-1K | 1000 | 128 | 20 epochs | **79.08%** | **94.51%** | 36h |
-| ImageNet-1K | 1000 | 512 | 5 epochs | **~79.65%** | - | ~16h |
+| ImageNet-1K | 1000 | 512 | 5 epochs | **79.65%** | - | ~16h |
 | **Paper (original)** | 1000 | 2048 | 5 epochs | **84.0%** | - | - |
 
 **Gap Analysis**: Our 1-2% gap from paper is explained by hardware limitations (batch 512 vs paper's 2048).
