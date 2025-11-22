@@ -50,7 +50,7 @@ See: [`detectron2_mock/README.md`](detectron2_mock/README.md)
 ### 2. Comprehensive Hyperparameter Analysis
 We conducted two training runs with different configurations:
 - **Run 1**: Batch 128, 20-epoch warmup → 79.08%
-- **Run 2**: Batch 512, 5-epoch warmup (matches paper) → ~82%
+- **Run 2**: Batch 512, 5-epoch warmup (matches paper) → 79.65%
 
 **Key findings:**
 - Warmup schedule is critical for ViT convergence
