@@ -86,9 +86,13 @@ cd maskfeat-reproduction
 git checkout maskfeat-reproduction
 git submodule update --init --recursive
 
+# Create an virtual environment in your favour (use conda as example)
+conda create -n yourvenvname python=3.11
+conda activate
+
 # Install pytorch suitable for your environment (here use cu128 as example)
-# If running on AMD GPU / CPU / MacOS, please find the link on https://pytorch.org/
-pip3 install torch==2.9.0 torchvision==0.24.0 --index-url https://download.pytorch.org/whl/cu128
+# If running on AMD GPU, please find your link on https://pytorch.org/
+python3.11 -m pip3 install torch==2.9.0 torchvision==0.24.0 --index-url https://download.pytorch.org/whl/cu128
 
 # Install updated pytorchvideo using github (as the pip version is too old for it to run)
 git clone https://github.com/facebookresearch/pytorchvideo
@@ -107,7 +111,7 @@ export PYTHONPATH=$(pwd)/slowfast:$(pwd):$PYTHONPATH
 .\add_path_win.bat
 
 # Verify installation
-python -c "import detectron2; print('✅ detectron2 mock working!')"
+python3.11 -c "import detectron2; print('✅ detectron2 mock working!')"
 ```
 
 ### Download Pre-trained Model
