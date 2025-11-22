@@ -70,9 +70,9 @@ We conducted two training runs with different configurations:
 
 ### Prerequisites
 
-- Python 3.8+
-- PyTorch 2.0+
-- CUDA 11.8 or 12.1
+- Python 3.9+
+- PyTorch 2.9+
+- CUDA 12.8+
 - 4× GPUs with 16-24GB VRAM (for batch 512 training)
 
 ### Installation
@@ -87,6 +87,7 @@ pip install -r requirements.txt
 
 # Setup detectron2 mock
 export PYTHONPATH=$(pwd)/detectron2_mock:$(pwd):$PYTHONPATH
+export PYTHONPATH=$(pwd)/mask
 
 # Verify installation
 python -c "import detectron2; print('✅ detectron2 mock working!')"
