@@ -348,33 +348,40 @@ MODEL.ACT_CHECKPOINT: True
 
 ## 🎓 Citation
 
-**Original Paper:**
+If you find this reproduction useful in your research, please consider citing:
+
+### MaskFeat Paper (Original Work)
+
 ```bibtex
-@inproceedings{wei2022maskfeat,
-  title={Masked Feature Prediction for Self-Supervised Visual Pre-Training},
-  author={Wei, Chen and Fan, Haoqi and Xie, Saining and Wu, Chao-Yuan and Yuille, Alan and Feichtenhofer, Christoph},
-  booktitle={CVPR},
-  year={2022}
+@InProceedings{wei2022masked,
+    author    = {Wei, Chen and Fan, Haoqi and Xie, Saining and Wu, Chao-Yuan and Yuille, Alan and Feichtenhofer, Christoph},
+    title     = {Masked Feature Prediction for Self-Supervised Visual Pre-Training},
+    booktitle = {CVPR},
+    year      = {2022},
 }
 ```
 
-**SlowFast Framework:**
+### PySlowFast Framework
+
 ```bibtex
 @misc{fan2020pyslowfast,
-  author={Haoqi Fan and Yanghao Li and Bo Xiong and Wan-Yen Lo and Christoph Feichtenhofer},
-  title={PySlowFast},
-  howpublished={\url{https://github.com/facebookresearch/slowfast}},
-  year={2020}
+  author =       {Haoqi Fan and Yanghao Li and Bo Xiong and Wan-Yen Lo and
+                  Christoph Feichtenhofer},
+  title =        {PySlowFast},
+  howpublished = {\url{https://github.com/facebookresearch/slowfast}},
+  year =         {2020}
 }
 ```
 
-**This Reproduction:**
+### This Reproduction
+
 ```bibtex
-@misc{maskfeat_reproduction2025,
-  author={Musicamatics},
-  title={MaskFeat ImageNet Fine-tuning Reproduction},
-  howpublished={\url{https://github.com/Musicamatics/SlowFast}},
-  year={2025}
+@misc{musicamatics2025maskfeat,
+  author       = {Musicamatics},
+  title        = {MaskFeat ImageNet Fine-tuning Reproduction},
+  howpublished = {\url{https://github.com/Musicamatics/SlowFast/tree/maskfeat-reproduction}},
+  year         = {2025},
+  note         = {Course project for Introduction to Machine Learning, HKU}
 }
 ```
 
