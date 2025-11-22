@@ -391,7 +391,7 @@ If you find this reproduction useful in your research, please consider citing:
 
 - **Facebook Research** for the original MaskFeat paper and SlowFast codebase
 - **HKU CS Department** for providing GPU cluster access (4× NVIDIA RTX 4090)
-- **Professor [Name]** for project guidance and feedback
+- **Professor Dong XU** for project guidance and feedback
 - **HuggingFace** for hosting the ImageNet dataset
 
 ---
