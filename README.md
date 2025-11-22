@@ -26,7 +26,7 @@ This repository contains our reproduction of the MaskFeat self-supervised learni
 |---------|---------|------------|--------|-----------|-----------|---------------|
 | ImageNet-100 | 100 | 32 | 20 epochs | **89.42%** | **98.20%** | 14.7h |
 | ImageNet-1K | 1000 | 128 | 20 epochs | **79.08%** | **94.51%** | 36h |
-| ImageNet-1K | 1000 | 512 | 5 epochs | **79.65%** | - | ~16h |
+| ImageNet-1K | 1000 | 512 | 5 epochs | **79.65%** | - | 20h |
 | **Paper (original)** | 1000 | 2048 | 5 epochs | **84.0%** | - | - |
 
 **Gap Analysis**: Our 1-2% gap from paper is explained by hardware limitations (batch 512 vs paper's 2048).
@@ -257,7 +257,7 @@ data/imagenet-1k-converted/
 - Warmup: 5 epochs (matches paper)
 - Total epochs: 100
 - Mixed precision: Yes (FP16)
-- Result: **~82% top-1 accuracy** (projected at epoch 51/100)
+- Result: **79.65% top-1 accuracy** 
 
 **Data Augmentation:**
 - RandAugment (rand-m9-mstd0.5-inc1)
