@@ -83,6 +83,8 @@ We conducted two training runs with different configurations:
 # Clone this repository
 git clone --recursive https://github.com/Musicamatics/SlowFast.git 
 cd maskfeat-reproduction
+git checkout maskfeat-reproduction
+git submodule update --init --recursive
 
 # Install pytorch suitable for your environment (here use cu128 as example)
 # If running on AMD GPU / CPU / MacOS, please find the link on https://pytorch.org/
@@ -258,11 +260,13 @@ data/imagenet-1k-converted/
 - **Embedding dim**: 768 (ViT-B) / 1024 (ViT-L)
 - **Heads**: 12 (ViT-B) / 16 (ViT-L)
 - **Layers**: 12 (ViT-B) / 24 (ViT-L) transformer blocks
+- **MLP ratio**: 4.0
 - **Pre-training**: MaskFeat with 1600 epochs on ImageNet-1K
 
 ### Training Configuration
 
 **Run 1 (Baseline):**
+- Model: ViT-B
 - Batch size: 128 (32 per GPU × 4 GPUs)
 - Learning rate: 0.001 (scaled: 0.002 × 128/256)
 - Warmup: 20 epochs
@@ -271,12 +275,22 @@ data/imagenet-1k-converted/
 - Result: **79.08% top-1 accuracy**
 
 **Run 2 (Optimized):**
+- Model: ViT-B
 - Batch size: 512 (128 per GPU × 4 GPUs)
 - Learning rate: 0.004 (scaled: 0.002 × 512/256)
 - Warmup: 5 epochs (matches paper)
 - Total epochs: 100
 - Mixed precision: Yes (FP16)
 - Result: **79.65% top-1 accuracy** 
+
+**Run 3 (Test for ViT-L model):**
+- Model: ViT-L
+- Batch size: 192 (48 per GPU × 4 GPUs)
+- Learning rate: 0.00075 (scaled: 0.001 × 192/256)
+- Warmup: 5 epochs (matches paper)
+- Total epochs: 50
+- Mixed precision: Yes (FP16)
+- Result: **81.56% top-1 accuracy** 
 
 **Data Augmentation:**
 - RandAugment (rand-m9-mstd0.5-inc1)
@@ -300,7 +314,7 @@ data/imagenet-1k-converted/
   - Challenges and solutions
   - ~1400 lines of detailed analysis
 
-- **[TRAINING_RESULTS.md](TRAINING_RESULTS.md)** - ImageNet-100 results
+- **[TRAINING_RESULTS.md](TRAINING_RESULTS.md)** - ViT-B with ImageNet-100 results
   - Final accuracy: 89.42% top-1, 98.20% top-5
   - Training curves and checkpoints
   - Configuration details
@@ -319,7 +333,7 @@ data/imagenet-1k-converted/
 
 ### Issue 2: Out of Memory with Batch 512
 **Solution**: 
-- Reduce batch size to 384 or 256
+- Reduce batch size to 384 or 256 (ViT-B) / 128 or 64 (ViT-L) (need to adjust learning rate accordingly)
 - Enable mixed precision: `TRAIN.MIXED_PRECISION: True`
 - Use gradient accumulation: `SOLVER.GRAD_ACCUMULATION_STEPS: 2`
 
@@ -339,7 +353,7 @@ data/imagenet-1k-converted/
 nvidia-smi
 
 # Use smaller batch size in config
-TRAIN.BATCH_SIZE: 64  # Instead of 128
+TRAIN.BATCH_SIZE: 64  # Instead of 128, remember to scale learning rate accordingly
 
 # Or use gradient checkpointing (slower but saves memory)
 MODEL.ACT_CHECKPOINT: True
@@ -396,7 +410,7 @@ If you find this reproduction useful in your research, please consider citing:
 
 ```bibtex
 @misc{musicamatics2025maskfeat,
-  author       = {Musicamatics},
+  author       = {Musicamatics,comet13579},
   title        = {MaskFeat ImageNet Fine-tuning Reproduction},
   howpublished = {\url{https://github.com/Musicamatics/SlowFast/tree/maskfeat-reproduction}},
   year         = {2025},
@@ -427,10 +441,10 @@ See [LICENSE](LICENSE) for details.
 
 ## 📬 Contact
 
-- **Author**: Musicamatics
+- **Author**: Musicamatics, comet13579
 - **Institution**: University of Hong Kong (HKU)
-- **Course**: Introduction to Machine Learning (Fall 2025)
-- **GitHub**: [Musicamatics](https://github.com/Musicamatics)
+- **Course**: COMP3314 Introduction to Machine Learning (Fall 2025)
+- **GitHub**: [Musicamatics](https://github.com/Musicamatics), [comet13579](https://github.com/comet13579)
 
 For questions about this reproduction, please open an issue on GitHub.
 
@@ -446,5 +460,5 @@ For questions about this reproduction, please open an issue on GitHub.
 
 ---
 
-**Last Updated**: November 22, 2025
+**Last Updated**: November 23, 2025
 
