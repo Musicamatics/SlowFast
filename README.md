@@ -53,8 +53,9 @@ See: [`detectron2_mock/README.md`](detectron2_mock/README.md)
 
 ### 2. Comprehensive Hyperparameter Analysis
 We conducted two training runs with different configurations:
-- **Run 1**: Batch 128, 20-epoch warmup → 79.08%
-- **Run 2**: Batch 512, 5-epoch warmup (matches paper) → 79.65%
+- **Run 1**: ViT-B model, Batch 128, 20-epoch warmup → 79.08%
+- **Run 2**: ViT-B model, Batch 512, 5-epoch warmup (matches paper) → 79.65%
+- **Run 3**: ViT-L model, Batch 192, 5-epoch warmup (matches paper) → 81.56%
 
 **Key findings:**
 - Warmup schedule is critical for ViT convergence
@@ -76,8 +77,8 @@ We conducted two training runs with different configurations:
 
 - Python 3.8-3.11 (Version 3.12 has being tested, unable to run)
 - PyTorch 2.9+
-- CUDA 12.6+
-- 4× GPUs with 16-24GB VRAM (for batch 512 training)
+- CUDA 12.6+ / ROCM 6.4 (not tested on AMD GPU, pytorch 2.9 requirement for AMD)
+- 4× GPUs with 16-24GB VRAM (for batch 512 training (ViT-B) / batch 192 training (ViT-L))
 
 ### Installation
 
