@@ -338,7 +338,7 @@ data/imagenet-1k-converted/
 ### Issue 1: Detectron2 Installation Fails
 **Solution**: Use our `detectron2_mock` (see above). The full detectron2 is not needed for image-only training.
 
-### Issue 2: Out of Memory with Batch 512
+### Issue 2: Out of Memory with too large batches
 **Solution**: 
 - Reduce batch size to 384 or 256 (ViT-B) / 128 or 64 (ViT-L) (need to adjust learning rate accordingly)
 - Enable mixed precision: `TRAIN.MIXED_PRECISION: True`

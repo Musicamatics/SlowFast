@@ -1503,9 +1503,9 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
 
 **Resources:**
 - Code: [Github link](https://github.com/Musicamatics/SlowFast/tree/maskfeat-reproduction)
-- Logs: Available for detailed inspection
-- Checkpoints: Can share trained models
-- Documentation: All configs and scripts documented
+- Logs: Available on request for detailed inspection
+- Checkpoints: Can share trained models on request
+- Documentation: All configs and scripts documented on request
 
 ---
 
