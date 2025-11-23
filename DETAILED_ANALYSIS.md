@@ -553,7 +553,7 @@ Every 10 iterations:
 
 ## 📊 RESULTS
 
-### Quantitative Results: Run 1 (BS128, 20 warmup)
+### Quantitative Results: Run 1 (ViT-B) (BS128, 20 warmup)
 
 **Final Top-1 Accuracy: 79.08%** (Paper: 84.00%)
 - Top-1 Error: 20.92% (Paper: 16.00%)
@@ -583,7 +583,7 @@ Every 10 iterations:
 
 ---
 
-### Quantitative Results: Run 2 (BS512, 5 warmup) - Completed
+### Quantitative Results: Run 2 (ViT-B) (BS512, 5 warmup) - Completed
 
 **Final Results (Epoch 100/100)**
 - Training Top-1 Error: 8.98%
@@ -606,6 +606,38 @@ Every 10 iterations:
 | 80 | 3.60 | 13.77% | 22.19% | 5.92% | 0.00042 |
 | 90 | 3.41 | 11.72% | 20.79% | 5.27% | 0.00012 |
 | **100** | **3.35** | **8.98%** | **20.35%** | **5.14%** | **0.00000** |
+
+**Final Outcome:**
+- **Actual Top-1 Error:** 20.35% (Accuracy: 79.65%)
+- **Actual Top-5 Error:** 5.14% (Accuracy: 94.86%)
+- **Comparison to Run 1:** 0.57% accuracy improvement
+- **Comparison to Paper:** ~4.3% gap (due to batch size 512 vs 2048)
+
+---
+### Quantitative Results: Run 3 (ViT-L) (BS192, 5 warmup) - Completed
+
+**Final Results (Epoch 50/50)**
+- Training Top-1 Error: 10.00%
+- Validation Top-1 Error: 18.44%
+- Validation Top-5 Error: 3.98%
+- Final Accuracy: **81.56%**
+
+**Training Progression:**
+
+| Epoch | Training Loss | Training Top-1 Err | Val Top-1 Err | Val Top-5 Err | LR |
+|-------|--------------|-------------------|---------------|---------------|-----|
+| 5 | 4.86 | 50.64% | 47.56% | 21.81% | 0.00075 |
+| 10 | 4.14 | 32.41% | 34.00% | 12.04% | 0.00073 |
+| 15 | 3.80 | 25.77% | 29.14% | 9.07% | 0.00066 |
+| 20 | 3.60 | 21.88% | 26.25% | 7.60% | 0.00056 |
+| 25 | 3.43 | 18.76% | 23.86% | 6.34% | 0.00044 |
+| 30 | 3.27 | 13.58% | 22.12% | 5.64% | 0.00031 |
+| 35 | 3.14 | 23.79% | 20.38% | 4.70% | 0.00019 |
+| 40 | 3.00 | 11.85% | 19.21% | 4.26% | 0.00009 |
+| 45 | 2.92 | 10.54% | 18.45% | 4.02% | 0.00002 |
+| 50 | 2.90 | 10.00% | 18.44% | 3.98% | 0.00000 |
+
+**Run 3 (BS192, 5 warmup) (ViT-L) - Training Epoch Statistics:**
 
 **Final Outcome:**
 - **Actual Top-1 Error:** 20.35% (Accuracy: 79.65%)

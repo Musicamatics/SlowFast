@@ -371,7 +371,7 @@ MODEL.ACT_CHECKPOINT: True
 
 | Metric | Our Result | Paper | Notes |
 |--------|-----------|-------|-------|
-| **Top-1 Accuracy** | 79.08% (ViT-B)(BS128)<br>~82% (ViT-B)(BS512)<br>~81.6%(BS192)(ViT-L) | 84.0%(ViT-B)<br>85.7%(ViT-L) | Gap due to batch size |
+| **Top-1 Accuracy** | 79.08% (ViT-B)(BS128)<br>79.52% (ViT-B)(BS512)<br>81.56%(BS192)(ViT-L) | 84.0%(ViT-B)<br>85.7%(ViT-L) | Gap due to batch size |
 | **Batch Size** | 512 (ViT-B)<br>192(ViT-L) | 2048(ViT-B)<br>1024(ViT-L) | Hardware limitation |
 | **Warmup Schedule** | 5 epochs (Run 2 & 3) | 5 epochs | ✅ Matches |
 | **Training Stability** | Stable, no divergence | Stable | ✅ Confirmed |
