@@ -369,7 +369,7 @@ MODEL.ACT_CHECKPOINT: True
 
 | Metric | Our Result | Paper | Notes |
 |--------|-----------|-------|-------|
-| **Top-1 Accuracy** | 79.08% (BS128)<br>~82% (BS512) | 84.0% | Gap due to batch size |
+| **Top-1 Accuracy** | 79.08% (BS128)<br>79.65% (BS512) | 84.0% | Gap due to batch size |
 | **Batch Size** | 512 (max on 4×RTX4090) | 2048 | Hardware limitation |
 | **Warmup Schedule** | 5 epochs (Run 2) | 5 epochs | ✅ Matches |
 | **Training Stability** | Stable, no divergence | Stable | ✅ Confirmed |
