@@ -554,19 +554,19 @@ Every 10 iterations:
 **Learning Rate Trajectory Comparison:**
 
 ```
-Run 1 (BS128, 20 warmup):      Run 2 (BS512, 5 warmup):
+Run 1 (BS128, 20 warmup):           Run 2 (BS512, 5 warmup):
       
-  LR                            LR
-0.0010|    _______________    0.0040|  ___
-      |   /               \         | /   \
-      |  /                 \        |/     \___
-      | /                   \       |          \___
-      |/                     \____  |              \____
-0.0000|__________________________ 0.0000|_____________________
-      0    20    50    100 epochs       0   5   50    100 epochs
+  LR                                 LR
+0.0010|    _______________         0.0040|  ___
+      |   /               \              | /   \
+      |  /                 \             |/     \___
+      | /                   \            |          \___
+      |/                     \____       |              \____
+0.0000|__________________________  0.0000|_____________________
+      0    20    50    100 epochs        0   5   50    100 epochs
       
-      Slow warmup (20 epochs)         Fast warmup (5 epochs)
-      Conservative early learning     Aggressive early learning
+      Slow warmup (20 epochs)              Fast warmup (5 epochs)
+      Conservative early learning          Aggressive early learning
 ```
 
 **Impact on Convergence:**
