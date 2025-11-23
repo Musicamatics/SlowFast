@@ -5,13 +5,13 @@
 
 ## 🔧 IMPLEMENTATION DETAILS
 
-### Architecture: Vision Transformer Base (ViT-B)
+### Architecture: Vision Transformer Base (ViT-B) and Vision Transformer Large (ViT-L)
 **Model Specifications:**
-- **Parameters:** 85.9 million
+- **Parameters:** 85.9 million (ViT-B) and 307 million (ViT-L)
 - **Architecture:** MViT (Multiscale Vision Transformer)
-  - Embedding dimension: 768
-  - Number of heads: 12
-  - Depth: 12 transformer blocks
+  - Embedding dimension: 768 (ViT-B) / 1024 (ViT-L)
+  - Number of heads: 12 (ViT-B) / 16 (ViT-L)
+  - Depth: 12 (ViT-B) / 24 (ViT-L) transformer blocks
   - MLP ratio: 4.0
   - Patch size: 16×16
   - Input resolution: 224×224
@@ -50,7 +50,7 @@
 
 ---
 
-### Experimental Setup: Two Configurations
+### Experimental Setup: Two Configurations (ViT-B)
 
 | **Parameter** | **Run 1: Baseline** | **Run 2: Optimized** | **Paper Target** |
 |---------------|---------------------|----------------------|------------------|
@@ -66,6 +66,22 @@
 | **End LR** | 1e-6 | 1e-6 | 1e-6 |
 | **Layer Decay** | 0.65 | 0.65 | 0.65 |
 
+### Experimental Setup: (ViT-L)
+
+| **Parameter** | **Run 3** | **Paper Target** |
+|---------------|---------------------|------------------|
+| **Batch Size** | 128 (32/GPU) | 2048 (512/GPU) |
+| **Learning Rate** | 0.00075 | 0.004 |
+| **LR Scaling** | 0.001×192/256 | 0.001×1024/256 |
+| **Warmup Epochs** | 5 ✅ | 5 |
+| **Total Epochs** | 50 | 50 |
+| **Mixed Precision** | FP16 ✅ | Not specified |
+| **Optimizer** | AdamW | AdamW |
+| **Weight Decay** | 0.05 |  0.05 |
+| **LR Schedule** | Cosine | Cosine |
+| **End LR** | 1e-6 | 1e-6 |
+| **Layer Decay** | 0.75 |0.75 |
+
 **Hardware:**
 - **GPUs:** 4× NVIDIA RTX 4090 (24GB each)
 - **Distributed:** PyTorch DDP with NCCL backend
@@ -73,10 +89,12 @@
 - **Memory Usage:** 
   - Run 1 (FP32): 5.95GB/GPU
   - Run 2 (FP16): 13.75-14.39GB/GPU
+  - Run 3 (FP16): 17.18-20.59GB/GPU
 
 **Training Time:**
 - Run 1 (BS128): ~36 hours
 - Run 2 (BS512): ~8 hours/50 epochs (est. 16h total)
+- Run 3 (BS192): ~50 hours
 
 ---
 
@@ -89,6 +107,11 @@ Phase 1 - Warmup (Run 1: 20 epochs, Run 2: 5 epochs):
   End: BASE_LR (linear ramp)
   
 Phase 2 - Cosine Decay (Remaining epochs):
+  Start: BASE_LR
+  End: 1e-6
+  Formula: lr = min_lr + 0.5 × (max_lr - min_lr) × (1 + cos(π × progress))
+
+Phase 3 - Cosine Decay (Remaining epochs):
   Start: BASE_LR
   End: 1e-6
   Formula: lr = min_lr + 0.5 × (max_lr - min_lr) × (1 + cos(π × progress))
@@ -110,18 +133,25 @@ Phase 2 - Cosine Decay (Remaining epochs):
 - Epoch 50: 0.00217 (midpoint)
 - Target Epoch 100: ~0.00000
 
+*Run 3 (BS192, 5 warmup):*
+- Epoch 1: 0.00015 (warmup)
+- Epoch 5: 0.00075 (peak)
+- Epoch 25: 0.00044 (midpoint)
+- Epoch 50: 0.00000 (endpoint)
+
 **Gradient Analysis:**
 - **Gradient Norm (early training):**
   - Run 1 (BS128): avg 2.11
   - Run 2 (BS512): avg 1.07 (50% smaller!)
+  - Run 3 (BS192): 
 - **Gradient Clipping:** None (inherently stable)
 - **Mixed Precision Loss Scaling:** Dynamic (automatic)
 
 ---
 
-### Detailed Training Metrics: Every 10 Epochs
+### Detailed Training Metrics: Every 10 Epochs (ViT-B) / Every 5 Epochs (ViT-L)
 
-**Run 1 (BS128, 20 warmup) - Training Epoch Statistics:**
+**Run 1 (BS128, 20 warmup) (ViT-B) - Training Epoch Statistics:**
 
 | Epoch | Loss | Train Err | LR | Grad Norm | GPU Mem | dt_net | dt_data |
 |-------|------|-----------|-----|-----------|---------|--------|---------|
@@ -136,7 +166,7 @@ Phase 2 - Cosine Decay (Remaining epochs):
 | 90 | 3.291 | 15.84% | 0.00004 | 15.29 | 5.95G | 0.127s | 1.616s |
 | 100 | 3.218 | 14.64% | 0.00000 | 13.28 | 5.95G | 0.126s | 1.595s |
 
-**Run 2 (BS512, 5 warmup) - Training Epoch Statistics:**
+**Run 2 (BS512, 5 warmup) (ViT-B) - Training Epoch Statistics:**
 
 | Epoch | Loss | Train Err | LR | Grad Norm | GPU Mem | dt_net | dt_data |
 |-------|------|-----------|-----|-----------|---------|--------|---------|
@@ -145,6 +175,22 @@ Phase 2 - Cosine Decay (Remaining epochs):
 | 30 | 4.323 | 37.59% | 0.00335 | 3.80 | 14.39G | 0.236s | 1.522s |
 | 40 | 4.085 | 32.20% | 0.00280 | 4.44 | 14.39G | 0.236s | 1.593s |
 | 50 | 3.874 | 27.45% | 0.00217 | 5.10 | 14.39G | 0.235s | 1.639s |
+
+**Run 3 (BS192, 5 warmup) (ViT-L) - Training Epoch Statistics:**
+
+| Epoch | Loss | Train Err | LR | Grad Norm | GPU Mem | dt_net | dt_data |
+|-------|------|-----------|-----|-----------|---------|--------|---------|
+| 5 | 4.857 | 50.64% | 0.00075 | 6.72 | 19.46G | 0.288s | 1.838s |
+| 10 | 4.139 | 32.41% | 0.00073 | 9.58 | 17.19G | 0.293s | 1.708s |
+| 15 | 3.802 | 25.77% | 0.00066 | 12.82 | 19.46G | 0.293s | 1.863s |
+| 20 | 3.601 | 21.88% | 0.00056 | 11.73 | 18.33G | 0.295s | 1.806s |
+| 25 | 3.430 | 18.76% | 0.00044 | 13.84 | 19.47G | 0.290s | 1.845s |
+| 30 | 3.272 | 13.58% | 0.00031 | 10.31 | 18.32G | 0.292s | 1.799s |
+| 35 | 3.144 | 23.79% | 0.00019 | 12.14 | 19.46G | 0.294s | 1.824s |
+| 40 | 2.999 | 11.85% | 0.00009 | 12.95 | 18.32G | 0.292s | 1.835s |
+| 45 | 2.915 | 10.54% | 0.00002 | 9.67 | 20.59G | 0.297s | 1.849s |
+| 50 | 2.896 | 10.00% | 0.00000 | 12.64 | 19.46G | 0.297s | 1.885s |
+
 
 **Key Observations:**
 1. **Gradient norms:** Run 2 has 2-3× smaller gradients (more stable!)
@@ -178,7 +224,7 @@ Phase 2 - Cosine Decay (Remaining epochs):
 
 ### Learning Rate Schedule Visualization (Data-Driven)
 
-**Run 1 (BS128, 20-epoch warmup):**
+**Run 1 (ViT-B) (BS128, 20-epoch warmup):**
 ```
 LR Schedule:
 Epoch 10:  0.00050  ← Still warming up (halfway)
@@ -193,7 +239,7 @@ Epoch 90:  0.00004
 Epoch 100: 0.00000  ← Min LR reached
 ```
 
-**Run 2 (BS512, 5-epoch warmup):**
+**Run 2 (ViT-B) (BS512, 5-epoch warmup):**
 ```
 LR Schedule:
 Epoch 5:   0.00400  ← Peak reached (4× higher than Run 1!)
@@ -202,6 +248,21 @@ Epoch 20:  0.00376
 Epoch 30:  0.00335  
 Epoch 40:  0.00280  
 Epoch 50:  0.00217  ← Still 2× higher than Run 1 @ Epoch 50
+```
+
+**Run 3 (ViT-L) (BS192, 5-epoch warmup):**
+```
+LR Schedule:
+Epoch 5:  0.00075  ← Peak reached
+Epoch 10:  0.00073  ← Cosine decay begins
+Epoch 15:  0.00066  
+Epoch 20:  0.00056  
+Epoch 25:  0.00044  
+Epoch 30:  0.00031  ← 50% of peak between epoch 25 & 30
+Epoch 35:  0.00019  
+Epoch 40:  0.00009  
+Epoch 45:  0.00002  
+Epoch 50: 0.00000  ← Min LR reached
 ```
 
 **Analysis:**
@@ -213,7 +274,7 @@ Epoch 50:  0.00217  ← Still 2× higher than Run 1 @ Epoch 50
 
 ### Gradient Norm Evolution
 
-**Run 1 (BS128):**
+**Run 1 (ViT-B) (BS128):**
 ```
 Gradient Norms Every 10 Epochs:
 Epoch 10:   7.62
@@ -231,7 +292,7 @@ Average: 11.88
 Trend: Increases over time (learning harder examples)
 ```
 
-**Run 2 (BS512):**
+**Run 2 (ViT-B) (BS512):**
 ```
 Gradient Norms Every 10 Epochs:
 Epoch 10:  2.65
@@ -242,6 +303,24 @@ Epoch 50:  5.10  ← Gradually increasing
 
 Average: 4.01
 Trend: More stable, 2-3× smaller than Run 1
+```
+
+**Run 3 (ViT-L) (BS192):**
+```
+Gradient Norms Every 5 Epochs:
+Epoch 5:   6.72
+Epoch 10:   9.58
+Epoch 15:  12.82  ← Peak
+Epoch 20:  11.73
+Epoch 25:  13.84  ← Highest
+Epoch 30:  10.31
+Epoch 35:  12.14
+Epoch 40:  12.95  ← Peak
+Epoch 45:  9.67
+Epoch 50: 12.64 ← Peak
+
+Average: 9.94
+Trend: 
 ```
 
 **Why Run 2 has smaller gradient norms:**
@@ -257,13 +336,15 @@ Trend: More stable, 2-3× smaller than Run 1
 **RAM Usage (System Memory):**
 - Run 1: ~17-18GB (consistent throughout)
 - Run 2: ~23-24GB (36% higher, more data loading workers)
+- Run 3: ~26-29GB (Larger model requires more RAM)
 - Available: 472GB (plenty of headroom)
 
 **GPU Memory Usage:**
 - Run 1: 5.95GB per GPU (stable after warmup)
 - Run 2: 13.75-14.39GB per GPU (grows slightly over time)
-- Ratio: 2.4× more for Run 2
-- Headroom: Run 1 has 75%, Run 2 has 40% (safe)
+- Run 3: 17.18-20.59GB per GPU (grows slightly over time)
+- Ratio: Run 2 uses 2.4× than Run 1
+- Headroom: Run 1 has 75%, Run 2 has 40%, Run 3 has 14% (all safe)
 
 **I/O vs Compute Ratio:**
 ```
@@ -276,9 +357,14 @@ Run 2:
 - Compute (dt_net):  0.236s avg
 - I/O (dt_data):     1.80s avg
 - Ratio:             7.6× I/O bound (better, but still bad!)
+
+Run 3:
+- Compute (dt_net):  0.293s avg
+- I/O (dt_data):     1.83s avg
+- Ratio:             6.24× I/O bound (Larger models requires more time for computation)
 ```
 
-**Why Run 2 is less I/O bound:**
+**Why Run 2 is less I/O bound than Run 1:**
 - Fewer iterations per epoch (2502 vs 10009)
 - More time spent in compute (2× longer per iter)
 - But still dominated by data loading!
@@ -312,8 +398,8 @@ Run 2:
 - Unstable for 36-hour training runs
 
 **Problem 2:** RTX 4090 initially only via `srun`
-- 4-hour time limits
-- Training interruption every 4 hours
+- 6-hour time limits
+- Training interruption every 6 hours
 - Lost progress without checkpointing
 
 **Solution:** Obtained `sbatch` access to RTX 4090 queue
@@ -327,7 +413,7 @@ Run 2:
 ---
 
 ### Challenge 3: GPU Memory Constraints
-**Problem:** Batch size 512 needs ~24GB (4090 has 24GB)
+**Problem:** ViT-B model Batch size 512 needs ~24GB (4090 has 24GB)
 ```
 BS512 @ FP32: ~23.8GB/GPU → ❌ OOM risk
 Available memory: 24GB
@@ -338,6 +424,8 @@ Risk: Any memory spike = crash
 - **Memory reduction:** 40-50% savings
 - **Actual usage:** 13.75-14.39GB/GPU
 - **Headroom:** ~10GB safety margin
+
+In the same logic, same solution of using FP16 is also applied on ViT-L model run with batch size 192. (Without FP16 it can only run batch size 128)
 
 **Implementation:**
 ```python
@@ -368,7 +456,7 @@ Iteration time breakdown (Run 2, Epoch 50):
 ```
 
 **Root Causes:**
-1. **Large batch size:** 512 images/iteration (4× more than Run 1)
+1. **Large batch size:** 512 images/iteration (ViT-B) (4× more than Run 1)
 2. **Heavy augmentation:** RandAugment + Mixup + CutMix + RandErase
 3. **Disk I/O:** ImageNet-1K on shared storage
 4. **CPU preprocessing:** Color jitter, geometric transforms
@@ -577,7 +665,7 @@ Run 1 (BS128, 20 warmup):      Run 2 (BS512, 5 warmup):
 **Observation:** Larger batch = smaller gradient norms
 
 ```
-Average Gradient Norms Every 10 Epochs:
+Average Gradient Norms Every 10 Epochs (ViT-B):
 
 Run 1 (BS128):                Run 2 (BS512):
 Epoch 10:   7.62              Epoch 10:  2.65  (↓ 65%)

@@ -2,7 +2,7 @@
 
 **Reproduction of:** "Masked Feature Prediction for Self-Supervised Visual Pre-Training" ([Wei et al., CVPR 2022](https://arxiv.org/abs/2112.09133))
 
-**Course Project:** Introduction to Machine Learning (HKU, Fall 2025)
+**Course Project:** COMP3314 Introduction to Machine Learning (HKU, Fall 2025)
 
 ---
 
@@ -12,10 +12,11 @@ This repository contains our reproduction of the MaskFeat self-supervised learni
 
 ### Key Achievements
 
-- ✅ **ImageNet-100**: Achieved **89.42% top-1 accuracy** (98.20% top-5)
-- ✅ **ImageNet-1K**: Achieved **79.08% top-1 accuracy** with batch size 128
-- ✅ **ImageNet-1K**: Achieved **79.65% top-1 accuracy** with batch size 512
-- ✅ **Paper's result**: 84.0% (our gap explained by smaller batch size: 512 vs 2048)
+- ✅ **ImageNet-100**: ViT-B model Achieved **89.42% top-1 accuracy** (98.20% top-5)
+- ✅ **ImageNet-1K**: ViT-B model Achieved **79.08% top-1 accuracy** with batch size 128
+- ✅ **ImageNet-1K**: ViT-B model Achieved **79.65% top-1 accuracy** with batch size 512
+- ✅ **ImageNet-1K**: ViT-L model Achieved **81.56% top-1 accuracy** with batch size 192
+- ✅ **Paper's result**: 84.0% (ViT-B) & 85.7% (ViT-L) (our gap explained by smaller batch size due to hardware limits)
 - ✅ **Created `detectron2_mock`**: Workaround for Meta AI's unmaintained dependency
 
 ---
@@ -27,13 +28,14 @@ This repository contains our reproduction of the MaskFeat self-supervised learni
 | ViT-B | ImageNet-100 | 100 | 32 | 20 epochs | **89.42%** | **98.20%** | 14.7h |
 | ViT-B | ImageNet-1K | 1000 | 128 | 20 epochs | **79.08%** | **94.51%** | 36h |
 | ViT-B | ImageNet-1K | 1000 | 512 | 5 epochs | **79.65%** | - | 20h |
-| ViT-L | ImageNet-1K | 1000 | 192 | 5 epochs | **81.56%** | **96.0%** | 20h |
-| ViT-B | **Paper (original)** | 1000 | 2048 | 5 epochs | **84.0%** | - | 50h |
+| ViT-L | ImageNet-1K | 1000 | 192 | 5 epochs | **81.56%** | **96.0%** | 50h |
+| ViT-B | **Paper (original)** | 1000 | 2048 | 5 epochs | **84.0%** | - | - |
 | ViT-L | **Paper (original)** | 1000 | 1024 | 5 epochs | **85.7%** | - | - |
 
 **Gap Analysis**: Our 1-2% gap from paper is explained by hardware limitations (batch 512 vs paper's 2048).
 
 For detailed analysis, see [DETAILED_ANALYSIS.md](DETAILED_ANALYSIS.md).
+For interactive graphs of the results, please visit [here](https://musicamatics.github.io/maskfeat-analysis/)
 
 ---
 
@@ -224,7 +226,7 @@ python scripts/data_preparation/verify_dataset.py \
 
 ```bash
 # Download from HuggingFace (requires token)
-# This requires ~140GB storage and takes 2-4 hours
+# This requires ~140GB storage
 huggingface-cli login  # Enter your token
 python scripts/data_preparation/download_imagenet1k.py \
   --output_dir data/imagenet-1k
@@ -369,11 +371,11 @@ MODEL.ACT_CHECKPOINT: True
 
 | Metric | Our Result | Paper | Notes |
 |--------|-----------|-------|-------|
-| **Top-1 Accuracy** | 79.08% (BS128)<br>~82% (BS512) | 84.0% | Gap due to batch size |
-| **Batch Size** | 512 (max on 4×RTX4090) | 2048 | Hardware limitation |
-| **Warmup Schedule** | 5 epochs (Run 2) | 5 epochs | ✅ Matches |
+| **Top-1 Accuracy** | 79.08% (ViT-B)(BS128)<br>~82% (ViT-B)(BS512)<br>~81.6%(BS192)(ViT-L) | 84.0%(ViT-B)<br>85.7%(ViT-L) | Gap due to batch size |
+| **Batch Size** | 512 (ViT-B)<br>192(ViT-L) | 2048(ViT-B)<br>1024(ViT-L) | Hardware limitation |
+| **Warmup Schedule** | 5 epochs (Run 2 & 3) | 5 epochs | ✅ Matches |
 | **Training Stability** | Stable, no divergence | Stable | ✅ Confirmed |
-| **Mixed Precision** | FP16 (Run 2) | Not specified | Our optimization |
+| **Mixed Precision** | FP16 (Run 2 & 3) | Not specified | Our optimization |
 
 **Our Analysis:**
 - The 2-4% accuracy gap is primarily due to **batch size** (512 vs 2048)
