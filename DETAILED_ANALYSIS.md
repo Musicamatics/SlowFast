@@ -321,6 +321,7 @@ Epoch 50: 12.64 ← Peak
 
 Average: 9.94
 Trend: 
+Increate over time, with multiple peaks
 ```
 
 **Why Run 2 has smaller gradient norms:**
@@ -635,15 +636,14 @@ Every 10 iterations:
 | 35 | 3.14 | 23.79% | 20.38% | 4.70% | 0.00019 |
 | 40 | 3.00 | 11.85% | 19.21% | 4.26% | 0.00009 |
 | 45 | 2.92 | 10.54% | 18.45% | 4.02% | 0.00002 |
-| 50 | 2.90 | 10.00% | 18.44% | 3.98% | 0.00000 |
+| **50** | **2.90** | **10.00%** | **18.44%** | **3.98%** | **0.00000** |
 
 **Run 3 (BS192, 5 warmup) (ViT-L) - Training Epoch Statistics:**
 
 **Final Outcome:**
-- **Actual Top-1 Error:** 20.35% (Accuracy: 79.65%)
-- **Actual Top-5 Error:** 5.14% (Accuracy: 94.86%)
-- **Comparison to Run 1:** 0.57% accuracy improvement
-- **Comparison to Paper:** ~4.3% gap (due to batch size 512 vs 2048)
+- **Actual Top-1 Error:** 18.44% (Accuracy: 81.56%)
+- **Actual Top-5 Error:** 4.02% (Accuracy: 95.98%)
+- **Comparison to Paper:** ~4.1% gap (due to batch size 192 vs 1024)
 
 ---
 
@@ -666,6 +666,19 @@ Every 10 iterations:
 2. ✅ **Better alignment:** Matches paper's warmup schedule
 3. ✅ **Verified improvement:** +0.57% final accuracy over Run 1
 4. ✅ **2.25× faster:** 16h vs 36h total time
+
+---
+### Comparison: Run 3 vs Paper
+
+| Metric |  Run 2 (BS512) | Paper | 
+|--------|----------------|-------|
+| **Final Top-1 Acc** | **81.56%** | 84.00% |
+| **Final Top-1 Err** | **18.44%** | 16.00% |
+| **Final Top-5 Err** | **4.02%** | - |
+| **Batch Size** | **192** | 1024 |
+| **Warmup Epochs** | **5** ✅ | 5 |
+| **Training Time** | ~50 hours | - |
+| **GPU Memory** | 17.18GB | - |
 
 ---
 
@@ -719,7 +732,7 @@ Run 3 (ViT-L, BS192, 5 warmup):
 Average Gradient Norms Every 10 Epochs (ViT-B):
 
 Run 1 (BS128):                Run 2 (BS512):
-Epoch 10:   7.62              Epoch 10:  2.65  (↓ 65%)
+Epoch 10:   7.62              Epoch 10:  2.65  (↓ 65%)        
 Epoch 20:   9.54              Epoch 20:  4.08  (↓ 57%)
 Epoch 30:  10.12              Epoch 30:  3.80  (↓ 62%)
 Epoch 40:  10.33              Epoch 40:  4.44  (↓ 57%)
@@ -732,6 +745,25 @@ Epoch 100: 13.28              Epoch 100: 6.50  (↓ 51%)
 
 Average Run 1: 11.88          Average Run 2:  4.85 (↓ 59%)
 Trend: Increases over time    Trend: Stable, slightly increases late
+```
+
+```
+Average Gradient Norms Every 5 Epochs (ViT-L):
+Run 3 (BS192):
+Epoch 5:   6.72
+Epoch 10:   9.58
+Epoch 15:  12.82
+Epoch 20:  11.73
+Epoch 25:  13.84
+Epoch 30:  10.31
+Epoch 35:  12.14
+Epoch 40:  12.95
+Epoch 45:  9.67
+Epoch 50: 12.64
+
+Average: 9.94
+Trend: 
+Increate over time, with multiple peaks            
 ```
 
 **Explanation:**
@@ -754,7 +786,7 @@ Trend: Increases over time    Trend: Stable, slightly increases late
 **Measured I/O vs Compute Times (Every 10 Epochs):**
 
 **Run 1 (BS128):**
-```
+
 Epoch | dt_net (GPU) | dt_data (I/O) | Ratio  | % Time in I/O
 ------|-------------|---------------|--------|---------------
   10  |    0.126s   |    1.493s     | 11.9×  |    92.2%
@@ -769,11 +801,11 @@ Epoch | dt_net (GPU) | dt_data (I/O) | Ratio  | % Time in I/O
  100  |    0.126s   |    1.595s     | 12.7×  |    92.7%
 
 Average: 92.4% of time spent waiting for data!
-```
+
 
 **Run 2 (BS512):**
-```
-Epoch | dt_net (GPU) | dt_data (I/O) | Ratio  | % Time in I/O
+
+Epoch | dt_net (GPU) | dt_data (I/O) | Ratio | % Time in I/O
 ------|-------------|---------------|--------|---------------
   10  |    0.236s   |    1.583s     |  6.7×  |    87.0%
   20  |    0.236s   |    1.526s     |  6.5×  |    86.6%
@@ -782,7 +814,23 @@ Epoch | dt_net (GPU) | dt_data (I/O) | Ratio  | % Time in I/O
   50  |    0.235s   |    1.639s     |  7.0×  |    87.5%
 
 Average: 87.0% of time spent waiting for data!
-```
+
+
+**Run 3 (BS192, 5 warmup) (ViT-L) - Training Epoch Statistics:**
+
+| Epoch | dt_net (GPU)| dt_data (I/O)| Ratio  | % Time in I/O
+|-------|--------|---------|--------|---------------
+| 5 | 0.288s | 1.838s | 9.854x |
+| 10 | 0.293s | 1.708s | 
+| 15 | 0.293s | 1.863s |
+| 20 | 0.295s | 1.806s |
+| 25 | 0.290s | 1.845s |
+| 30 | 0.292s | 1.799s |
+| 35 | 0.294s | 1.824s |
+| 40 | 0.292s | 1.835s |
+| 45 | 0.297s | 1.849s |
+| 50 | 0.297s | 1.885s |
+
 
 **Key Findings:**
 1. **Run 1:** GPUs idle 92.4% of the time! (only 7.6% actually computing)
