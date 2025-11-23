@@ -321,7 +321,7 @@ Epoch 50: 12.64 ← Peak
 
 Average: 9.94
 Trend: 
-Increate over time, with multiple peaks
+Increase over time, with multiple peaks
 ```
 
 **Why Run 2 has smaller gradient norms:**
@@ -487,7 +487,7 @@ Iteration time breakdown (Run 2, Epoch 50):
 |-----------|-----------|-------|--------------|
 | Batch size | 128 | 2048 | 16× smaller |
 | Warmup | 20 epochs | 5 epochs | 4× longer |
-| Total GPU-hours | 144 (4×36h) | ~8192? | Much less compute |
+| Total GPU-hours | 144 (4×36h) | ???? | Much less compute |
 | Learning rate | 0.001 | 0.016 | Correctly scaled |
 
 **Hypothesis:** 
