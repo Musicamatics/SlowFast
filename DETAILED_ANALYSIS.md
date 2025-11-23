@@ -1562,7 +1562,7 @@ MViT-Base (85.9M parameters):
 HKU CS GPU Farm Configuration:
 
 Node: gpu-4090-402
-- CPUs: 2× Intel Xeon (56 cores total)
+- CPUs: 2× Intel Xeon(R) Gold 5418Y (56 cores total)
 - RAM: 472GB DDR4
 - GPUs: 4× NVIDIA RTX 4090
   - Memory: 24GB GDDR6X per GPU
