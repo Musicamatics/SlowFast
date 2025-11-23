@@ -687,6 +687,21 @@ Run 1 (BS128, 20 warmup):           Run 2 (BS512, 5 warmup):
       
       Slow warmup (20 epochs)              Fast warmup (5 epochs)
       Conservative early learning          Aggressive early learning
+
+Run 3 (ViT-L, BS192, 5 warmup):
+
+  LR
+0.00075|    ___
+       |   /   \
+       |  /     \
+       | /       \
+       |/         \
+       |           \____
+0.00000|_______________________
+       0   5     25     50 epochs
+
+       Fast warmup (5 epochs)
+       Scaled LR for ViT-L (Lower base LR)
 ```
 
 **Impact on Convergence:**
@@ -805,29 +820,26 @@ Loss
   0   5       100
 ```
 
+**Run 3 (ViT-L, Medium Batch, Fast Warmup):**
+```
+Loss
+  │
+  │   ───╲       ← Very steep descent (Large model learns fast)
+  │       ╲      ← Short warmup
+  │        ╲___  ← Converges in fewer epochs (50 vs 100)
+  │
+  └──────────────→ Epochs
+  0   5    25    50
+```
+
 ---
 
 ### Visual Comparison: Training Curves
 
 **Top-1 Error Over Time:**
 
-```
-Error %
-90│ Run1 ●
-  │      ●
-70│        ●  Run2 ■
-  │  Run2 ■  ●
-50│      ■ ●   ●
-  │         ●■  ●
-30│           ■● ●
-  │            ■●
-10│              ■●    ← Run2 advantage grows
-  └────────────────────→ Epochs
-   0  10  30  50  100
-
-● Run 1 (BS128, 20 warmup) - Final: 20.92%
-■ Run 2 (BS512, 5 warmup)  - Final: 20.35%
-```
+Interactive chart available here:
+[**👉 View Interactive Comparison Chart**](https://musicamatics.github.io/maskfeat-analysis/4_comparison_old_vs_new_runs_interactive.html)
 
 **Key Insight:** Run 2 converged faster and achieved better final accuracy!
 
