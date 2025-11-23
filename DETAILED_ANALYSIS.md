@@ -655,6 +655,21 @@ Run 1 (BS128, 20 warmup):           Run 2 (BS512, 5 warmup):
       
       Slow warmup (20 epochs)              Fast warmup (5 epochs)
       Conservative early learning          Aggressive early learning
+
+Run 3 (ViT-L, BS192, 5 warmup):
+
+  LR
+0.00075|    ___
+       |   /   \
+       |  /     \
+       | /       \
+       |/         \
+       |           \____
+0.00000|_______________________
+       0   5     25     50 epochs
+
+       Fast warmup (5 epochs)
+       Scaled LR for ViT-L (Lower base LR)
 ```
 
 **Impact on Convergence:**
