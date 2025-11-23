@@ -763,7 +763,7 @@ Epoch 50: 12.64
 
 Average: 9.94
 Trend: 
-Increate over time, with multiple peaks            
+Increase over time, with multiple peaks            
 ```
 
 **Explanation:**
@@ -890,8 +890,11 @@ Loss
 
 **Top-1 Error Over Time:**
 
-Interactive chart available here:
-[**👉 View Interactive Comparison Chart**](https://musicamatics.github.io/maskfeat-analysis/4_comparison_old_vs_new_runs_interactive.html)
+Interactive charts available here:
+
+[**👉 ViT-B vs ViT-L Three-Way Comparison Chart**](https://musicamatics.github.io/maskfeat-analysis/6_three_way_comparison_vitb_vitl_interactive.html)
+
+[**📊 Full Interactive Dashboard (All Charts)**](https://musicamatics.github.io/maskfeat-analysis/)
 
 **Key Insight:** Run 2 converged faster and achieved better final accuracy!
 

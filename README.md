@@ -27,7 +27,7 @@ This repository contains our reproduction of the MaskFeat self-supervised learni
 |---------|---------|---------|------------|--------|-----------|-----------|---------------|
 | ViT-B | ImageNet-100 | 100 | 32 | 20 epochs | **89.42%** | **98.20%** | 14.7h |
 | ViT-B | ImageNet-1K | 1000 | 128 | 20 epochs | **79.08%** | **94.51%** | 36h |
-| ViT-B | ImageNet-1K | 1000 | 512 | 5 epochs | **79.65%** | - | 20h |
+| ViT-B | ImageNet-1K | 1000 | 512 | 5 epochs | **79.65%** | **94.86%** | 20h |
 | ViT-L | ImageNet-1K | 1000 | 192 | 5 epochs | **81.56%** | **96.0%** | 50h |
 | ViT-B | **Paper (original)** | 1000 | 2048 | 5 epochs | **84.0%** | - | - |
 | ViT-L | **Paper (original)** | 1000 | 1024 | 5 epochs | **85.7%** | - | - |
