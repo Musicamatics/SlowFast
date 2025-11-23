@@ -820,25 +820,29 @@ Average: 87.0% of time spent waiting for data!
 
 | Epoch | dt_net (GPU)| dt_data (I/O)| Ratio  | % Time in I/O
 |-------|--------|---------|--------|---------------
-| 5 | 0.288s | 1.838s | 9.854x |
-| 10 | 0.293s | 1.708s | 
-| 15 | 0.293s | 1.863s |
-| 20 | 0.295s | 1.806s |
-| 25 | 0.290s | 1.845s |
-| 30 | 0.292s | 1.799s |
-| 35 | 0.294s | 1.824s |
-| 40 | 0.292s | 1.835s |
-| 45 | 0.297s | 1.849s |
-| 50 | 0.297s | 1.885s |
+| 5 | 0.288s | 1.838s | 9.854x | 90.7% |
+| 10 | 0.293s | 1.708s | 5.829x | 85.4% |
+| 15 | 0.293s | 1.863s | 6.358x | 86.4% |
+| 20 | 0.295s | 1.806s | 6.122x | 86.0% |
+| 25 | 0.290s | 1.845s | 6.362x | 86.4% |
+| 30 | 0.292s | 1.799s | 6.161x | 86.0% |
+| 35 | 0.294s | 1.824s | 6.204x | 86.1% |
+| 40 | 0.292s | 1.835s | 6.284x | 86.3% |
+| 45 | 0.297s | 1.849s | 6.226x | 86.2% |
+| 50 | 0.297s | 1.885s | 6.347x | 86.4% |
+
+Average: 86.6% of time spent wwaiting for data!
 
 
 **Key Findings:**
 1. **Run 1:** GPUs idle 92.4% of the time! (only 7.6% actually computing)
-2. **Run 2:** GPUs idle 87% of the time (slightly better, still terrible!)
-3. **Theoretical speedup:** If we eliminated I/O bottleneck:
+2. **Run 2:** GPUs idle 87.0% of the time (slightly better, still terrible!)
+3. **Run 2:** GPUs idle 86.6% of the time (slightly better, still terrible!)
+4. **Theoretical speedup:** If we eliminated I/O bottleneck:
    - Run 1: 12.2× faster → 2.95h instead of 36h!
    - Run 2: 7.7× faster → 2.1h instead of 16h!
-4. **Reality:** Disk I/O is the limiting factor, not GPU compute
+   - Run 3: 7.5x faster → 6.5h instead of 50h!!!
+5. **Reality:** Disk I/O is the limiting factor (as GPU farms are interconnected with 10G networks, no NVME SSD direct access), not GPU compute
 
 ---
 
@@ -893,7 +897,7 @@ Interactive chart available here:
 
 ---
 
-### Validation Performance
+### Validation Performance (ViT-B only)
 
 **Validation Top-1 Error (every 10 epochs):**
 
@@ -1104,7 +1108,7 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
        ↑ 87.0% waiting for data          ↑ 13.0% compute
 ```
 
-**Both runs severely bottlenecked by disk I/O!**
+**Both runs severely bottlenecked by I/O speed!**
 
 ---
 
@@ -1204,20 +1208,20 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
 ### Limitations
 
 **1. Batch Size Gap from Paper**
-- **Our:** 512 (4 GPUs × 128)
-- **Paper:** 2048 (? GPUs × ? per GPU)
+- **Our:** 512 (4 RTX4090 GPUs × 128)
+- **Paper:** 2048 (8 A100 80G GPUs? × 256 per GPU) (guessed with VRAM size and paper date)
 - **Gap:** 4× smaller batch
 - **Impact:** ~1-2% accuracy loss expected
 
 **Why we couldn't match:**
 - Hardware: Only 4× RTX 4090 (24GB each)
 - Memory: 512 is maximum with FP16
-- Would need 16 GPUs to match paper
+- Would need A100 / H100 GPUs to match paper
 
 ---
 
 **2. Data Loading Bottleneck**
-- **Limitation:** Shared storage bandwidth
+- **Limitation:** Shared storage bandwidth with whole GPU farm with only 10G interconnection
 - **Impact:** Training 2× slower than possible
 - **Workaround:** None without infrastructure change
 
@@ -1246,7 +1250,7 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
   - Kinetics-400 dataset (240GB)
   - 3D convolutions / temporal modeling
   - Much longer training time
-  - Beyond course scope
+  - Unable to download kinetics datasets from github offical link (estimated download more than a year!)
 
 **What we demonstrated:**
 - Core MaskFeat approach works
@@ -1333,7 +1337,7 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
 **If we had more time/resources:**
 
 1. **Scale to paper's batch size (2048)**
-   - Would need 16× RTX 4090 or 8× A100
+   - Would need 8× A100 / H100 / H20
    - Expected: +1-2% accuracy → ~85%
 
 2. **Video modality on Kinetics-400**
@@ -1352,7 +1356,7 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
    - Compare to supervised pre-training
 
 5. **Architecture search:**
-   - Try ViT-L, ViT-H (larger models)
+   - Try ViT-H (the largest ViT model)
    - Compare MViT vs standard ViT
    - Experiment with patch sizes
 
@@ -1363,8 +1367,8 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
 **Paper's main claims:**
 
 ✅ **Claim 1:** MaskFeat matches supervised pre-training
-- **Paper:** 84.0% ImageNet-1K accuracy
-- **Us:** 79.08% (BS128) → **79.65%** (BS512)
+- **Paper:** 84.0% (ViT-B) / 85.7% (ViT-L) ImageNet-1K accuracy
+- **Us:** 79.08% (BS128) → **79.65%** (BS512) (ViT-B) / **81.56%** (BS192) (ViT-L)
 - **Gap:** ~4% (explained by smaller batch)
 - **Verdict:** ✅ **Confirmed** (within hardware limits)
 
@@ -1405,7 +1409,7 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
 3. ❌ **Single run per config** (no variance estimation)
 4. ❌ **No ablation studies** (time constraints)
 5. ❌ **Video modality** not attempted
-6. ⚠️ **Could use better storage** (NVMe vs HDD)
+6. ⚠️ **Could use better storage** (NVMe vs network storage on GPU farm)
 
 ---
 
@@ -1415,7 +1419,8 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
 
 **What we reproduced:**
 - ✅ MaskFeat fine-tuning on ImageNet-1K
-- ✅ 79.08% accuracy (BS128) → ~80-83% projected (BS512)
+- ✅ (ViT-B) 79.08% accuracy (BS128) → ~80-83% projected (BS512) 
+- ✅ (ViT-L) 81.56% projected (BS192) 
 - ✅ Within 1-4% of paper (84.0%)
 - ✅ Stable training with mixed precision
 - ✅ Successful distributed training (4 GPUs)
@@ -1463,7 +1468,7 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
 **What made this project successful:**
 
 1. **Persistence through dependency hell**
-   - Solved Detectron2 with creative mock
+   - Solved detectron2 with creative mock
    - Navigated CUDA/PyTorch compatibility
 
 2. **Resource constraints handling**
@@ -1472,9 +1477,10 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
    - Found creative solutions (FP16)
 
 3. **Systematic experimentation**
-   - Baseline run first (BS128)
+   - Baseline run first (ViT-B) (BS128)
    - Analyzed results, identified issues
-   - Optimized configuration (BS512)
+   - Optimized configuration (ViT-B) (BS512)
+   - Tried on larger model afterwards (ViT-L)
 
 4. **Automated infrastructure**
    - Monitoring scripts
@@ -1493,7 +1499,7 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
 **Questions?**
 
 **Resources:**
-- Code: [GitHub repo link if public]
+- Code: [Github link](https://github.com/Musicamatics/SlowFast/tree/maskfeat-reproduction)
 - Logs: Available for detailed inspection
 - Checkpoints: Can share trained models
 - Documentation: All configs and scripts documented
@@ -1502,7 +1508,7 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
 
 ## APPENDIX: Technical Details
 
-### Detailed Training Log Example (Run 2, Epoch 51)
+### Detailed Training Log Example (ViT-B, Run 2, Epoch 51)
 
 ```json
 {
@@ -1510,7 +1516,7 @@ Run 2: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓�
   "dt": 0.23698,           // Total iteration time (seconds)
   "dt_data": 0.00064,      // Data loading time
   "dt_net": 0.23634,       // GPU compute time
-  "epoch": "51/100",
+  "epoch": "51/100",       // Epoch
   "eta": "8:10:09",        // Estimated time remaining
   "gpu_mem": "13.75G",     // GPU memory usage
   "grad_norm": 4.54261,    // Gradient L2 norm
@@ -1565,9 +1571,9 @@ Node: gpu-4090-402
 
 Software:
 - OS: Ubuntu 20.04 LTS
-- CUDA: 11.8 / 12.1
-- PyTorch: 2.0.1
-- Python: 3.10 (Anaconda)
+- CUDA: 12.8
+- PyTorch: 2.9.0
+- Python: 3.11 (Anaconda)
 - SLURM: 21.08
 ```
 
