@@ -58,13 +58,13 @@
 | **Learning Rate** | 0.001 | 0.004 | 0.016 |
 | **LR Scaling** | 0.002×128/256 | 0.002×512/256 | 0.002×2048/256 |
 | **Warmup Epochs** | 20 | 5 ✅ | 5 |
-| **Total Epochs** | 100 | 100 | 100 |
+| **Total Epochs** | 100 ✅| 100 ✅| 100 |
 | **Mixed Precision** | FP32 | FP16 ✅ | Not specified |
 | **Optimizer** | AdamW | AdamW | AdamW |
-| **Weight Decay** | 0.05 | 0.05 | 0.05 |
-| **LR Schedule** | Cosine | Cosine | Cosine |
-| **End LR** | 1e-6 | 1e-6 | 1e-6 |
-| **Layer Decay** | 0.65 | 0.65 | 0.65 |
+| **Weight Decay** | 0.05 ✅| 0.05 ✅| 0.05 |
+| **LR Schedule** | Cosine ✅| Cosine ✅| Cosine |
+| **End LR** | 1e-6 ✅| 1e-6 ✅| 1e-6 |
+| **Layer Decay** | 0.65 ✅| 0.65 ✅| 0.65 |
 
 ### Experimental Setup: (ViT-L)
 
@@ -74,13 +74,13 @@
 | **Learning Rate** | 0.00075 | 0.004 |
 | **LR Scaling** | 0.001×192/256 | 0.001×1024/256 |
 | **Warmup Epochs** | 5 ✅ | 5 |
-| **Total Epochs** | 50 | 50 |
+| **Total Epochs** | 50 ✅| 50 |
 | **Mixed Precision** | FP16 ✅ | Not specified |
 | **Optimizer** | AdamW | AdamW |
-| **Weight Decay** | 0.05 |  0.05 |
-| **LR Schedule** | Cosine | Cosine |
-| **End LR** | 1e-6 | 1e-6 |
-| **Layer Decay** | 0.75 |0.75 |
+| **Weight Decay** | 0.05 ✅|  0.05 |
+| **LR Schedule** | Cosine ✅| Cosine |
+| **End LR** | 1e-6 ✅| 1e-6 |
+| **Layer Decay** | 0.75 ✅|0.75 |
 
 **Hardware:**
 - **GPUs:** 4× NVIDIA RTX 4090 (24GB each)
@@ -1047,16 +1047,16 @@ Run 2: 512 imgs/iter ÷ 0.236s = 2,169 imgs/sec (2.15× faster!)
 
 | Epoch | Run 1 (BS128) | Run 2 (BS512) | Δ Improvement |
 |-------|---------------|---------------|---------------|
-| 10 | 67.55% | 60.58% | **-6.97 pp** ✅ |
-| 20 | 54.69% | 45.25% | **-9.44 pp** ✅ |
-| 30 | 44.43% | 37.59% | **-6.84 pp** ✅ |
-| 40 | 38.53% | 32.20% | **-6.33 pp** ✅ |
-| 50 | 33.14% | 27.45% | **-5.69 pp** ✅ |
-| 60 | 27.50% | 18.65% | **-8.85 pp** ✅ |
-| 70 | 21.72% | 14.36% | **-7.36 pp** ✅ |
-| 80 | 19.61% | 13.77% | **-5.84 pp** ✅ |
-| 90 | 14.06% | 11.72% | **-2.34 pp** ✅ |
-| 100 | 14.64% | 8.98% | **-5.66 pp** ✅ |
+| 10 | 67.55% | 60.58% | **-6.97 pp**  |
+| 20 | 54.69% | 45.25% | **-9.44 pp**  |
+| 30 | 44.43% | 37.59% | **-6.84 pp**  |
+| 40 | 38.53% | 32.20% | **-6.33 pp**  |
+| 50 | 33.14% | 27.45% | **-5.69 pp**  |
+| 60 | 27.50% | 18.65% | **-8.85 pp**  |
+| 70 | 21.72% | 14.36% | **-7.36 pp**  |
+| 80 | 19.61% | 13.77% | **-5.84 pp**  |
+| 90 | 14.06% | 11.72% | **-2.34 pp**  |
+| 100 | 14.64% | 8.98% | **-5.66 pp**  |
 
 **Run 2 leads by 2-11 percentage points throughout training!**
 
