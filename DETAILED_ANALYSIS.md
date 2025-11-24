@@ -672,8 +672,8 @@ Every 10 iterations:
 
 | Metric |  Run 2 (BS512) | Paper | 
 |--------|----------------|-------|
-| **Final Top-1 Acc** | **81.56%** | 84.00% |
-| **Final Top-1 Err** | **18.44%** | 16.00% |
+| **Final Top-1 Acc** | **81.56%** | 85.70% |
+| **Final Top-1 Err** | **18.44%** | 14.30% |
 | **Final Top-5 Err** | **4.02%** | - |
 | **Batch Size** | **192** | 1024 |
 | **Warmup Epochs** | **5** ✅ | 5 |
